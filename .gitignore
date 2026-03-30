@@ -1,0 +1,19 @@
+dist/
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+preview.out.log
+preview.err.log
+
+# TypeScript build artifacts
+*.tsbuildinfo
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
