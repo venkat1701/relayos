@@ -3,7 +3,7 @@
  * YC-style: clear value prop, descriptive features, pricing, social proof
  */
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -220,7 +220,13 @@ export function LandingPage() {
             <div className="lp-logo-mark">CS</div>
             <span>Chief of Staff</span>
           </div>
-          <p>2026 Chief of Staff OS. All rights reserved.</p>
+          <div className="lp-footer-meta">
+            <p>2026 Chief of Staff OS. All rights reserved.</p>
+            <div className="lp-footer-links">
+              <Link to="/privacy">Privacy</Link>
+              <Link to="/terms">Terms</Link>
+            </div>
+          </div>
         </div>
       </footer>
 
@@ -324,7 +330,28 @@ export function LandingPage() {
         /* Footer */
         .lp-footer { padding: 32px; border-top: 1px solid #1a1a1a; }
         .lp-footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .lp-footer-meta {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+
         .lp-footer p { color: #555; font-size: 13px; margin: 0; }
+
+        .lp-footer-links {
+          display: flex;
+          gap: 14px;
+        }
+
+        .lp-footer-links a {
+          color: #888;
+          font-size: 13px;
+          text-decoration: none;
+        }
+
+        .lp-footer-links a:hover {
+          color: #ece4b7;
+        }
 
         /* Responsive */
         @media (max-width: 900px) {
@@ -333,6 +360,8 @@ export function LandingPage() {
           .lp-features-grid, .lp-problem-grid, .lp-pricing-grid { grid-template-columns: 1fr; }
           .lp-preview-grid { grid-template-columns: 1fr; }
           .lp-nav-links { display: none; }
+          .lp-footer-inner { flex-direction: column; gap: 16px; }
+          .lp-footer-meta { flex-direction: column; gap: 10px; }
         }
       `}</style>
     </div>

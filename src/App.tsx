@@ -25,6 +25,8 @@ import { DashboardLayout } from "./layouts/DashboardLayout";
 // Pages
 import { LandingPage } from "./pages/LandingPage";
 import { AuthPage } from "./pages/AuthPage";
+import { PrivacyPage } from "./pages/PrivacyPage";
+import { TermsPage } from "./pages/TermsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { InboxPage } from "./pages/InboxPage";
 import { CalendarPage } from "./pages/CalendarPage";
@@ -361,6 +363,8 @@ function App() {
         <Route path="/" element={isAuthenticated ? <Navigate to="/command" /> : <LandingPage />} />
         <Route path="/login" element={isAuthenticated ? <Navigate to="/command" /> : <AuthPage mode="login" onLogin={handleLogin} onRegister={handleRegister} />} />
         <Route path="/register" element={isAuthenticated ? <Navigate to="/command" /> : <AuthPage mode="register" onLogin={handleLogin} onRegister={handleRegister} />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
 
         {isAuthenticated ? (
           <Route path="/*" element={<DashboardLayout user={user} onLogout={handleLogout} organizationId={selectedOrganizationId} token={token || ""} activeWorkspaceId={activeWorkspaceId} onWorkspaceSelect={handleWorkspaceSelect}><Routes>

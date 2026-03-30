@@ -3,7 +3,7 @@
  */
 
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface AuthPageProps {
   mode: "login" | "register";
@@ -178,13 +178,13 @@ export function AuthPage({ mode, onLogin, onRegister }: AuthPageProps) {
           {!isLogin && (
             <p className="terms-text">
               By creating an account, you agree to our{" "}
-              <a href="#" className="terms-link">
+              <Link to="/terms" className="terms-link">
                 Terms of Service
-              </a>{" "}
+              </Link>{" "}
               and{" "}
-              <a href="#" className="terms-link">
+              <Link to="/privacy" className="terms-link">
                 Privacy Policy
-              </a>
+              </Link>
             </p>
           )}
         </div>
