@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Proxy all /api/* requests to the backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://YOUR_BACKEND_DOMAIN/api/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "netlify"}
+
+# SPA fallback — all other routes serve index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
