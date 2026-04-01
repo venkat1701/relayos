@@ -17,3 +17,9 @@ preview.err.log
 # OS/editor noise
 .DS_Store
 Thumbs.db
+
+# Local Netlify folder
+.netlify
+
+# Local/temporary backups
+src/App.tsx.backup
