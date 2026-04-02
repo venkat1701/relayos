@@ -17,6 +17,7 @@ export const API_ROUTES = {
     gmailWatch: (integrationId: string) => `/api/v1/integrations/${integrationId}/gmail/watch`,
     calendarWatch: (integrationId: string) => `/api/v1/integrations/${integrationId}/calendar/watch`,
     driveWatch: (integrationId: string) => `/api/v1/integrations/${integrationId}/drive/watch`,
+    updateServices: (integrationId: string) => `/api/v1/integrations/${integrationId}/services`,
   },
   actions: {
     execute: "/api/v1/actions/execute",
@@ -88,6 +89,8 @@ export const API_ROUTES = {
     tools: "/api/v1/composio/tools",
     toolkits: "/api/v1/composio/toolkits",
     connect: "/api/v1/composio/connect",
+    disconnect: "/api/v1/composio/disconnect",
+    resetSession: "/api/v1/composio/reset-session",
   },
   workspaces: {
     list: "/api/v1/workspaces",
@@ -100,5 +103,15 @@ export const API_ROUTES = {
     list: "/api/v1/context-questions",
     answer: (id: string) => `/api/v1/context-questions/${id}/answer`,
     context: "/api/v1/context-questions/context",
+  },
+  customAgents: {
+    list: "/api/v1/custom-agents",
+    create: "/api/v1/custom-agents",
+    get: (id: string) => `/api/v1/custom-agents/${id}`,
+    update: (id: string) => `/api/v1/custom-agents/${id}`,
+    delete: (id: string) => `/api/v1/custom-agents/${id}`,
+    run: (id: string) => `/api/v1/custom-agents/${id}/run`,
+    toggle: (id: string) => `/api/v1/custom-agents/${id}/toggle`,
+    availableTools: "/api/v1/custom-agents/available-tools",
   },
 } as const;
