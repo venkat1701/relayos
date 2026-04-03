@@ -20,6 +20,8 @@ interface DashboardLayoutProps {
   token?: string;
   activeWorkspaceId?: string | null;
   onWorkspaceSelect?: (id: string | null) => void;
+  onSidebarToggle?: (collapsed: boolean) => void;
+  workspaceLoading?: boolean;
 }
 
 interface NavItem {
@@ -31,44 +33,57 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: "command", label: "Command Center", path: "/command", icon: "▦", description: "Operational intelligence" },
-  { id: "inbox", label: "Inbox", path: "/inbox", icon: "✉", description: "Email threads and messages" },
-  { id: "calendar", label: "Calendar", path: "/calendar", icon: "◐", description: "Meetings and events" },
-  { id: "tasks", label: "Tasks", path: "/tasks", icon: "✓", description: "Task management and triage" },
-  { id: "commitments", label: "Commitments", path: "/commitments", icon: "⇄", description: "Promises and follow-through" },
-  { id: "goals", label: "Goals", path: "/goals", icon: "◎", description: "OKRs and objectives" },
-  { id: "decisions", label: "Decisions", path: "/decisions", icon: "⚖", description: "Decision ledger" },
-  { id: "documents", label: "Documents", path: "/documents", icon: "◫", description: "Docs and Sheets" },
-  { id: "weekly", label: "Weekly Plan", path: "/weekly", icon: "◧", description: "Calendar optimization" },
-  { id: "chat", label: "AI Agent", path: "/chat", icon: "◉", description: "Conversational agent" },
-  { id: "drafts", label: "Email Drafts", path: "/drafts", icon: "✎", description: "Review & approve" },
-  { id: "agent-studio", label: "Agent Studio", path: "/agent-studio", icon: "⚙", description: "Customize the agent" },
-  { id: "whatsapp", label: "WhatsApp", path: "/whatsapp", icon: "W", description: "Messages & contacts" },
-  { id: "workspaces", label: "Workspaces", path: "/workspaces", icon: "⊞", description: "Context isolation" },
-  { id: "actions", label: "Agent Log", path: "/agent-actions", icon: "⊙", description: "Audit trail" },
-  { id: "timeline", label: "Timeline", path: "/timeline", icon: "◷", description: "Activity feed" },
+  { id: "command", label: "Command Center", path: "/command", icon: "fi fi-rr-dashboard", description: "Operational intelligence" },
+  { id: "inbox", label: "Inbox", path: "/inbox", icon: "fi fi-rr-envelope", description: "Email threads and messages" },
+  { id: "calendar", label: "Calendar", path: "/calendar", icon: "fi fi-rr-calendar", description: "Meetings and events" },
+  { id: "tasks", label: "Tasks", path: "/tasks", icon: "fi fi-rr-checkbox", description: "Task management and triage" },
+  { id: "commitments", label: "Commitments", path: "/commitments", icon: "fi fi-rr-arrows-repeat", description: "Promises and follow-through" },
+  { id: "goals", label: "Goals", path: "/goals", icon: "fi fi-rr-bullseye", description: "OKRs and objectives" },
+  { id: "decisions", label: "Decisions", path: "/decisions", icon: "fi fi-rr-balance-scale-left", description: "Decision ledger" },
+  { id: "documents", label: "Documents", path: "/documents", icon: "fi fi-rr-document", description: "Docs and Sheets" },
+  { id: "weekly", label: "Weekly Plan", path: "/weekly", icon: "fi fi-rr-calendar-day", description: "Calendar optimization" },
+  { id: "chat", label: "AI Agent", path: "/chat", icon: "fi fi-rr-comment-dots", description: "Conversational agent" },
+  { id: "drafts", label: "Email Drafts", path: "/drafts", icon: "fi fi-rr-edit", description: "Review & approve" },
+  { id: "agent-studio", label: "Agent Studio", path: "/agent-studio", icon: "fi fi-rr-customize", description: "Customize the agent" },
+  { id: "agent-builder", label: "Agent Builder", path: "/agents/builder", icon: "fi fi-rr-cube", description: "Create custom AI agents" },
+  { id: "whatsapp", label: "WhatsApp", path: "/whatsapp", icon: "fi fi-brands-whatsapp", description: "Messages & contacts" },
+  { id: "workspaces", label: "Workspaces", path: "/workspaces", icon: "fi fi-rr-apps", description: "Context isolation" },
+  { id: "actions", label: "Agent Log", path: "/agent-actions", icon: "fi fi-rr-chart-connected", description: "Audit trail" },
+  { id: "timeline", label: "Timeline", path: "/timeline", icon: "fi fi-rr-clock", description: "Activity feed" },
 ];
 
-export function DashboardLayout({ children, user, onLogout, organizationId, token, activeWorkspaceId, onWorkspaceSelect }: DashboardLayoutProps) {
+export function DashboardLayout({ children, user, onLogout, organizationId, token, activeWorkspaceId, onWorkspaceSelect, onSidebarToggle, workspaceLoading }: DashboardLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  const handleSidebarToggle = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    onSidebarToggle?.(next);
+  };
+
   const isActivePath = (path: string) => location.pathname === path;
+
+  // Generate a key that changes on route change to trigger page-enter animation
+  const pageKey = location.pathname;
 
   return (
     <div className="dashboard-layout">
+      {/* Top progress bar during workspace loading */}
+      {workspaceLoading && <div className="progress-bar-top" />}
+
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
         <div className="sidebar-header">
           <div className="logo">
-            <div className="logo-icon noise">CS</div>
-            {!sidebarCollapsed && <span className="logo-text">Chief of Staff</span>}
+            <div className="logo-icon noise">RO</div>
+            {!sidebarCollapsed && <span className="logo-text">RelayOS</span>}
           </div>
           <button
             className="collapse-btn"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            onClick={handleSidebarToggle}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             type="button"
           >
@@ -94,7 +109,7 @@ export function DashboardLayout({ children, user, onLogout, organizationId, toke
               className={`nav-item ${isActivePath(item.path) ? "active" : ""}`}
               title={sidebarCollapsed ? item.label : undefined}
             >
-              <span className="nav-icon">{item.icon}</span>
+              <i className={`nav-icon ${item.icon}`} />
               {!sidebarCollapsed && (
                 <div className="nav-content">
                   <span className="nav-label">{item.label}</span>
@@ -186,7 +201,11 @@ export function DashboardLayout({ children, user, onLogout, organizationId, toke
         </header>
 
         {/* Page Content */}
-        <main className="page-content">{children}</main>
+        <main className="page-content">
+          <div key={pageKey} className="page-enter">
+            {children}
+          </div>
+        </main>
       </div>
 
       <style>{`
@@ -304,8 +323,13 @@ export function DashboardLayout({ children, user, onLogout, organizationId, toke
         }
 
         .nav-icon {
-          font-size: 20px;
+          font-size: 18px;
           flex-shrink: 0;
+          width: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          line-height: 1;
         }
 
         .nav-content {
@@ -659,6 +683,8 @@ export function DashboardLayout({ children, user, onLogout, organizationId, toke
           background: linear-gradient(180deg, #00A7E1 0%, #DEC0F1 100%);
           border-radius: 3px;
         }
+
+        /* Page-level transitions handled via global styles.css */
       `}</style>
     </div>
   );
