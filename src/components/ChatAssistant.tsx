@@ -56,7 +56,7 @@ export function ChatAssistant({ organizationId, token, onClose }: ChatAssistantP
     {
       id: "welcome",
       role: "assistant",
-      content: "I'm Bond AI, your Chief of Staff. I can send emails, schedule meetings, track commitments, record decisions, analyze your calendar, detect risks, generate briefs, and manage your operational rhythm. What needs attention?",
+      content: "I'm Bond AI, your RelayOS assistant. I can send emails, schedule meetings, track commitments, record decisions, analyze your calendar, detect risks, generate briefs, and manage your operational rhythm. What needs attention?",
       timestamp: new Date(),
     },
   ]);
@@ -341,8 +341,8 @@ export function ChatAssistant({ organizationId, token, onClose }: ChatAssistantP
             borderRadius: 10, padding: "10px 14px", marginBottom: 8,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: toolActivity.result ? 6 : 0 }}>
-              <span style={{ fontSize: 14 }}>
-                {toolActivity.status === "executing" ? "⟳" : toolActivity.status === "completed" ? "✓" : "✗"}
+              <span style={{ fontSize: 14, lineHeight: 1 }}>
+                {toolActivity.status === "executing" ? <i className="fi fi-rr-arrows-repeat" style={{ display: 'inline-block', animation: 'spin 0.8s linear infinite' }} /> : toolActivity.status === "completed" ? <i className="fi fi-rr-check" style={{ color: '#4ade80' }} /> : <i className="fi fi-rr-cross-small" style={{ color: '#CC2936' }} />}
               </span>
               <strong style={{ color: "#ECE4B7", fontSize: 13 }}>{formatToolName(toolActivity.tool)}</strong>
               <span style={{
