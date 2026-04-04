@@ -2,7 +2,14 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
-import { useEffect } from "react";
+import { useEffect, useCallback, useImperativeHandle } from "react";
+
+export interface TiptapEditorHandle {
+  clearContent: () => void;
+  getHTML: () => string;
+  getText: () => string;
+  focus: () => void;
+}
 
 interface Props {
   content: string;
@@ -14,9 +21,10 @@ interface Props {
   onClose?: () => void;
   onSave?: () => void;
   saving?: boolean;
+  editorRef?: React.Ref<TiptapEditorHandle>;
 }
 
-export function TiptapEditor({ content, onUpdate, placeholder = "Start writing...", editable = true, fullscreen, documentName, onClose, onSave, saving }: Props) {
+export function TiptapEditor({ content, onUpdate, placeholder = "Start writing...", editable = true, fullscreen, documentName, onClose, onSave, saving, editorRef }: Props) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -24,7 +32,11 @@ export function TiptapEditor({ content, onUpdate, placeholder = "Start writing..
         codeBlock: { HTMLAttributes: { class: "code-block" } },
       }),
       Placeholder.configure({ placeholder }),
-      Link.configure({ openOnClick: true, HTMLAttributes: { class: "editor-link" } }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { class: "editor-link" },
+        validate: (href) => /^https?:\/\//.test(href),
+      }),
     ],
     content,
     editable,
@@ -33,11 +45,59 @@ export function TiptapEditor({ content, onUpdate, placeholder = "Start writing..
     },
   });
 
+  // Sync editable prop changes to the editor instance
+  useEffect(() => {
+    if (editor && editor.isEditable !== editable) {
+      editor.setEditable(editable);
+      if (editable) {
+        // Focus the editor when switching to editable mode
+        requestAnimationFrame(() => editor.commands.focus("end"));
+      }
+    }
+  }, [editor, editable]);
+
+  // Sync external content changes into the editor
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content);
+      editor.commands.setContent(content, { emitUpdate: false });
     }
-  }, [content]);
+  }, [editor, content]);
+
+  // Expose imperative handle for parent components
+  useImperativeHandle(editorRef, () => ({
+    clearContent: () => {
+      if (editor) {
+        editor.commands.clearContent(true);
+        onUpdate?.("", "");
+      }
+    },
+    getHTML: () => editor?.getHTML() ?? "",
+    getText: () => editor?.getText() ?? "",
+    focus: () => {
+      editor?.commands.focus();
+    },
+  }), [editor, onUpdate]);
+
+  const handleSetLink = useCallback(() => {
+    if (!editor) return;
+    const previousUrl = editor.getAttributes("link").href || "";
+    const url = window.prompt("Enter URL:", previousUrl);
+    if (url === null) return; // cancelled
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+    // Auto-prepend https:// if no protocol
+    const normalizedUrl = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+    editor.chain().focus().extendMarkRange("link").setLink({ href: normalizedUrl }).run();
+  }, [editor]);
+
+  const handleClearContent = useCallback(() => {
+    if (!editor) return;
+    editor.commands.clearContent(true);
+    editor.commands.focus();
+    onUpdate?.("", "");
+  }, [editor, onUpdate]);
 
   if (!editor) return null;
 
@@ -57,8 +117,12 @@ export function TiptapEditor({ content, onUpdate, placeholder = "Start writing..
       <button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive("codeBlock") ? "active" : ""}>Code</button>
       <span className="tb-divider" />
       <button type="button" onClick={() => editor.chain().focus().setHorizontalRule().run()}>Line</button>
-      <button type="button" onClick={() => { const url = window.prompt("Enter URL:"); if (url) editor.chain().focus().setLink({ href: url }).run(); }}>Link</button>
-      <button type="button" onClick={() => editor.chain().focus().unsetLink().run()}>Unlink</button>
+      <button type="button" onClick={handleSetLink} className={editor.isActive("link") ? "active" : ""}>Link</button>
+      <button type="button" onClick={() => editor.chain().focus().unsetLink().run()} disabled={!editor.isActive("link")}>Unlink</button>
+      <span className="tb-divider" />
+      <button type="button" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>Undo</button>
+      <button type="button" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()}>Redo</button>
+      <button type="button" onClick={handleClearContent} className="clear-btn">Clear</button>
     </div>
   ) : null;
 
@@ -183,13 +247,24 @@ const editorStyles = (
       cursor: pointer;
       transition: all 0.15s;
     }
-    .tiptap-toolbar button:hover {
+    .tiptap-toolbar button:hover:not(:disabled) {
       background: #1a1a1a;
       color: #fff;
     }
     .tiptap-toolbar button.active {
       background: rgba(0, 167, 225, 0.15);
       color: #00A7E1;
+    }
+    .tiptap-toolbar button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    .tiptap-toolbar button.clear-btn {
+      color: #CC2936;
+      margin-left: auto;
+    }
+    .tiptap-toolbar button.clear-btn:hover:not(:disabled) {
+      background: rgba(204, 41, 54, 0.15);
     }
     .tb-divider {
       width: 1px;
@@ -208,6 +283,13 @@ const editorStyles = (
       color: #fff;
       font-size: 15px;
       line-height: 1.75;
+      min-height: 120px;
+    }
+    .tiptap-content .tiptap.ProseMirror-focused {
+      /* subtle focus indicator on the wrapper */
+    }
+    .tiptap-wrapper:focus-within {
+      border-color: #00A7E1;
     }
     .tiptap-content .tiptap h1 { font-size: 26px; font-weight: 700; margin: 20px 0 10px; color: #fff; }
     .tiptap-content .tiptap h2 { font-size: 20px; font-weight: 600; margin: 18px 0 8px; color: #fff; }
