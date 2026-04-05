@@ -25,12 +25,14 @@ interface ApprovalNotificationsProps {
   organizationId: string;
   token: string;
   onApprovalDecided?: () => void;
+  sidebarCollapsed?: boolean;
 }
 
-export function ApprovalNotifications({ organizationId, token, onApprovalDecided }: ApprovalNotificationsProps) {
+export function ApprovalNotifications({ organizationId, token, onApprovalDecided, sidebarCollapsed = false }: ApprovalNotificationsProps) {
   const [approvals, setApprovals] = useState<Approval[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [minimized, setMinimized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loadApprovals = async () => {
@@ -87,8 +89,54 @@ export function ApprovalNotifications({ organizationId, token, onApprovalDecided
     }
   };
 
+  if (minimized) {
+    return (
+      <div
+        className={`approval-fab ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}
+        onClick={() => setMinimized(false)}
+        title={`${approvals.length} AI suggestion(s)`}
+      >
+        <span className="fab-count">{approvals.length}</span>
+        <style>{`
+          .approval-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 304px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00A7E1 0%, #DEC0F1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 16px rgba(0, 167, 225, 0.35);
+            transition: left 0.3s ease, transform 0.2s;
+            animation: fabIn 0.25s ease-out;
+          }
+          .approval-fab:hover {
+            transform: scale(1.1);
+          }
+          .approval-fab.sidebar-collapsed {
+            left: 104px;
+          }
+          .fab-count {
+            color: #020202;
+            font-weight: 800;
+            font-size: 16px;
+          }
+          @keyframes fabIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
-    <div className="approval-notifications">
+    <div className={`approval-notifications ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <div className="approvals-header">
         <div className="header-badge">
           <span className="badge-count">{approvals.length}</span>
@@ -96,8 +144,9 @@ export function ApprovalNotifications({ organizationId, token, onApprovalDecided
         </div>
         <button
           className="minimize-btn"
-          onClick={() => setExpandedId(null)}
+          onClick={() => { setMinimized(true); setExpandedId(null); }}
           type="button"
+          title="Minimize"
         >
           —
         </button>
@@ -142,7 +191,7 @@ export function ApprovalNotifications({ organizationId, token, onApprovalDecided
                       disabled={loading}
                       type="button"
                     >
-                      {loading ? "..." : "✓ Approve & Execute"}
+                      {loading ? "..." : "Approve & Execute"}
                     </button>
                     <button
                       className="reject-btn"
@@ -150,7 +199,7 @@ export function ApprovalNotifications({ organizationId, token, onApprovalDecided
                       disabled={loading}
                       type="button"
                     >
-                      {loading ? "..." : "✗ Reject"}
+                      {loading ? "..." : "Reject"}
                     </button>
                   </div>
                 </div>
@@ -164,7 +213,7 @@ export function ApprovalNotifications({ organizationId, token, onApprovalDecided
         .approval-notifications {
           position: fixed;
           bottom: 24px;
-          right: 24px;
+          left: 304px;
           width: 380px;
           max-height: 600px;
           background: #0a0a0a;
@@ -174,6 +223,11 @@ export function ApprovalNotifications({ organizationId, token, onApprovalDecided
           z-index: 1000;
           overflow: hidden;
           animation: slideIn 0.3s ease-out;
+          transition: left 0.3s ease;
+        }
+
+        .approval-notifications.sidebar-collapsed {
+          left: 104px;
         }
 
         @keyframes slideIn {
