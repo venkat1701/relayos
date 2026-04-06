@@ -34,7 +34,7 @@ export function AuthPage({ mode, onLogin, onRegister }: AuthPageProps) {
       } else {
         await onRegister(formData.fullName, formData.email, formData.password);
       }
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
@@ -49,8 +49,8 @@ export function AuthPage({ mode, onLogin, onRegister }: AuthPageProps) {
         <div className="auth-branding">
           <div className="branding-content">
             <div className="logo-large">
-              <div className="logo-icon">CS</div>
-              <span className="logo-text">Chief of Staff</span>
+              <div className="logo-icon">RO</div>
+              <span className="logo-text">RelayOS</span>
             </div>
             <h2 className="branding-title">Your AI-Powered Executive Assistant</h2>
             <p className="branding-subtitle">
@@ -58,19 +58,19 @@ export function AuthPage({ mode, onLogin, onRegister }: AuthPageProps) {
             </p>
             <div className="features-list">
               <div className="feature-item">
-                <span className="feature-icon">✓</span>
+                <i className="fi fi-rr-check feature-icon" />
                 <span>AI-powered task prioritization</span>
               </div>
               <div className="feature-item">
-                <span className="feature-icon">✓</span>
+                <i className="fi fi-rr-check feature-icon" />
                 <span>Real-time calendar intelligence</span>
               </div>
               <div className="feature-item">
-                <span className="feature-icon">✓</span>
+                <i className="fi fi-rr-check feature-icon" />
                 <span>Automated executive briefings</span>
               </div>
               <div className="feature-item">
-                <span className="feature-icon">✓</span>
+                <i className="fi fi-rr-check feature-icon" />
                 <span>Deep Gmail & Drive integration</span>
               </div>
             </div>
@@ -85,13 +85,13 @@ export function AuthPage({ mode, onLogin, onRegister }: AuthPageProps) {
             </button>
             <h1 className="form-title">{isLogin ? "Welcome back" : "Create your account"}</h1>
             <p className="form-subtitle">
-              {isLogin ? "Sign in to continue to Chief of Staff" : "Get started with your 14-day free trial"}
+              {isLogin ? "Sign in to continue to RelayOS" : "Get started with your 14-day free trial"}
             </p>
           </div>
 
           {error && (
             <div className="error-alert">
-              <span className="alert-icon">!</span>
+              <i className="fi fi-rr-exclamation alert-icon" />
               <span>{error}</span>
             </div>
           )}

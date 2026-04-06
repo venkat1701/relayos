@@ -86,7 +86,18 @@ export default function AgentActionsPage({ organizationId, token, workspaceId }:
       </div>
 
       {loading ? (
-        <div>{[1,2,3].map(i => <div key={i} className="skeleton skeleton-card" style={{ height: 80 }} />)}</div>
+        <div className="skeleton-page-list">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="skeleton-list-item">
+              <div className="skeleton skeleton-avatar" />
+              <div className="skeleton-text">
+                <div className="skeleton skeleton-line w70" />
+                <div className="skeleton skeleton-line w40" />
+              </div>
+              <div className="skeleton skeleton-line" style={{ width: 70, flexShrink: 0 }} />
+            </div>
+          ))}
+        </div>
       ) : (
         <>
           {pending.length > 0 && (

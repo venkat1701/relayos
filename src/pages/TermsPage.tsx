@@ -6,7 +6,7 @@ export function TermsPage() {
       <div className="legal-shell">
         <header className="legal-header">
           <Link to="/" className="legal-home">
-            Chief of Staff
+            RelayOS
           </Link>
           <div className="legal-links">
             <Link to="/privacy">Privacy</Link>
@@ -16,13 +16,13 @@ export function TermsPage() {
 
         <main className="legal-card">
           <p className="legal-kicker">Terms of Service</p>
-          <h1>Chief of Staff Terms of Service</h1>
+          <h1>RelayOS Terms of Service</h1>
           <p className="legal-updated">Effective date: March 30, 2026</p>
 
           <section>
             <h2>Use of the service</h2>
             <p>
-              Chief of Staff provides operational tooling, automation, and workspace intelligence for teams
+              RelayOS provides operational tooling, automation, and workspace intelligence for teams
               and operators. You may use the service only in compliance with applicable law and these terms.
               You are responsible for activity that occurs under your account and for maintaining the security
               of your credentials.
@@ -33,7 +33,7 @@ export function TermsPage() {
             <h2>Connected services</h2>
             <p>
               Certain features require access to third-party services such as Google Workspace, Slack, or
-              other integrations. By connecting those services, you authorize Chief of Staff to access and
+              other integrations. By connecting those services, you authorize RelayOS to access and
               process the data necessary to provide the functionality you enable.
             </p>
           </section>

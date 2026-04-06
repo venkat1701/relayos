@@ -14,6 +14,7 @@ export default function WeeklyPlanPage({ organizationId, token, workspaceId }: P
   const [analysis, setAnalysis] = useState<CalendarAnalysis | null>(null);
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [generating, setGenerating] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'overview' | 'opportunities' | 'plan'>('overview');
 
   useEffect(() => { loadAnalysis(); }, [organizationId]);
@@ -35,6 +36,7 @@ export default function WeeklyPlanPage({ organizationId, token, workspaceId }: P
       if (a && a.period) setAnalysis(a);
       setOpportunities(Array.isArray(o) ? o : []);
     } catch (e) { console.error(e); }
+    setLoading(false);
   }
 
   async function generatePlan() {
@@ -91,7 +93,19 @@ export default function WeeklyPlanPage({ organizationId, token, workspaceId }: P
         ))}
       </div>
 
-      {tab === 'overview' && analysis && (
+      {loading && (
+        <div className="wp-grid">
+          {[1,2,3].map(i => (
+            <div key={i} className="wp-card">
+              <div className="skeleton skeleton-line w40" style={{ height: 36, marginBottom: 12 }} />
+              <div className="skeleton skeleton-line w60" />
+              <div className="skeleton" style={{ height: 12, borderRadius: 6, marginTop: 12 }} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!loading && tab === 'overview' && analysis && (
         <>
           <div className="wp-grid">
             <div className="wp-card">

@@ -13,7 +13,7 @@ export function SettingsPage({ agentRunning = false, onStartAgent, onStopAgent }
     <div className="settings-page">
       <div className="settings-header">
         <h1>Settings</h1>
-        <p className="subtitle">Manage your Chief of Staff preferences</p>
+        <p className="subtitle">Manage your RelayOS preferences</p>
       </div>
 
       <div className="settings-grid">

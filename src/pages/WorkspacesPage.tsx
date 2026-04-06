@@ -116,7 +116,22 @@ export default function WorkspacesPage({ organizationId, token, onWorkspaceSelec
       )}
 
       {loading ? (
-        <div>{[1,2,3].map(i => <div key={i} className="skeleton skeleton-card" style={{ height: 100 }} />)}</div>
+        <div className="ws-grid">
+          <div style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 14, overflow: 'hidden' }}>
+            {[1,2,3].map(i => (
+              <div key={i} style={{ padding: '16px 20px', borderBottom: '1px solid #111' }}>
+                <div className="skeleton skeleton-line w60" />
+                <div className="skeleton skeleton-line w40" style={{ marginTop: 8 }} />
+              </div>
+            ))}
+          </div>
+          <div style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 14, padding: 24 }}>
+            <div className="skeleton skeleton-line w50" style={{ height: 20, marginBottom: 20 }} />
+            <div className="skeleton skeleton-line w80" />
+            <div className="skeleton skeleton-line w60" />
+            <div className="skeleton" style={{ height: 100, marginTop: 16, borderRadius: 8 }} />
+          </div>
+        </div>
       ) : workspaces.length === 0 && !showCreate ? (
         <div className="ws-empty">
           <div style={{ textAlign: 'center' }}>

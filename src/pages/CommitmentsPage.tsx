@@ -121,6 +121,21 @@ export default function CommitmentsPage({ organizationId, token, workspaceId }: 
       <h1 style={{ color: '#ECE4B7', fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Commitments</h1>
       <p style={{ color: '#888', fontSize: 14, marginBottom: 20 }}>Track promises made, received, and action items</p>
 
+      {loading ? (
+        <div className="skeleton-page-list" style={{ marginTop: 16 }}>
+          {[1,2,3,4,5].map(i => (
+            <div key={i} className="skeleton-list-item">
+              <div className="skeleton skeleton-avatar" />
+              <div className="skeleton-text">
+                <div className="skeleton skeleton-line w60" />
+                <div className="skeleton skeleton-line w40" />
+              </div>
+              <div className="skeleton skeleton-line" style={{ width: 80, flexShrink: 0 }} />
+            </div>
+          ))}
+        </div>
+      ) : <>
+
       <div className="cm-toolbar">
         <div className="cm-tabs">
           {(['all', 'overdue', 'waiting', 'mine'] as Tab[]).map(t => (
@@ -233,6 +248,7 @@ export default function CommitmentsPage({ organizationId, token, workspaceId }: 
           <div style={{ fontSize: 13, marginTop: 8 }}>{nudgeResult.message}</div>
         </div>
       )}
+      </>}
     </div>
   );
 }

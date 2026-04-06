@@ -29,10 +29,10 @@ interface DocumentsPageProps {
 }
 
 const ICONS: Record<string, string> = {
-  "application/vnd.google-apps.document": "D",
-  "application/vnd.google-apps.spreadsheet": "S",
-  "application/vnd.google-apps.presentation": "P",
-  "application/pdf": "PDF",
+  "application/vnd.google-apps.document": "fi fi-rr-document",
+  "application/vnd.google-apps.spreadsheet": "fi fi-rr-apps",
+  "application/vnd.google-apps.presentation": "fi fi-rr-play-circle",
+  "application/pdf": "fi fi-rr-file-pdf",
 };
 const TYPES: Record<string, string> = {
   "application/vnd.google-apps.document": "Google Doc",
@@ -204,7 +204,7 @@ export function DocumentsPage({ documents, token, organizationId, onWorkspaceRef
               const iconClass = doc.mime_type?.includes("document") ? "doc" : doc.mime_type?.includes("spreadsheet") ? "sheet" : doc.mime_type?.includes("presentation") ? "slides" : "other";
               return (
                 <div key={doc.id} className={`dp-item ${selectedId === doc.id ? "active" : ""}`} onClick={() => setSelectedId(doc.id)}>
-                  <div className={`dp-icon ${iconClass}`}>{ICONS[doc.mime_type || ""] || "F"}</div>
+                  <div className={`dp-icon ${iconClass}`}><i className={ICONS[doc.mime_type || ""] || "fi fi-rr-file"} /></div>
                   <div className="dp-item-info">
                     <div className="dp-item-name">{doc.name}</div>
                     <div className="dp-item-meta">{TYPES[doc.mime_type || ""] || doc.type} | {doc.last_modified_at ? new Date(doc.last_modified_at).toLocaleDateString() : "—"}</div>

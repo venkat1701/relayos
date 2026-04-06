@@ -118,13 +118,24 @@ export default function GoalsPage({ organizationId, token, workspaceId }: Props)
       </div>
 
       {loading ? (
-        <div>{[1,2,3].map(i => <div key={i} className="skeleton skeleton-card" style={{ height: 120, marginBottom: 12 }} />)}</div>
+        <div className="skeleton-page-list">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="skeleton-list-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 12 }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <div className="skeleton" style={{ width: 60, height: 22, borderRadius: 12 }} />
+                <div className="skeleton skeleton-line w50" style={{ marginBottom: 0 }} />
+              </div>
+              <div className="skeleton" style={{ height: 10, borderRadius: 6 }} />
+              <div className="skeleton skeleton-line w40" />
+            </div>
+          ))}
+        </div>
       ) : filtered.length === 0 ? (
-        <div style={{ color: '#888', textAlign: 'center', padding: 60 }}>
+        <div className="fade-in" style={{ color: '#888', textAlign: 'center', padding: 60 }}>
           {search ? `No goals match "${search}"` : 'No goals yet. Create your first objective to start tracking.'}
         </div>
       ) : (
-        filtered.map(g => {
+        <div className="stagger-in">{filtered.map(g => {
           const isExpanded = expandedId === g.id;
           const color = statusColors[g.status] || '#888';
           const calendarPct = g.calendar_hours_needed > 0 ? Math.min(100, (g.calendar_hours_allocated / g.calendar_hours_needed) * 100) : (g.calendar_hours_allocated > 0 ? 100 : 0);
@@ -185,7 +196,7 @@ export default function GoalsPage({ organizationId, token, workspaceId }: Props)
               )}
             </div>
           );
-        })
+        })}</div>
       )}
     </div>
   );

@@ -107,7 +107,20 @@ export default function DecisionsPage({ organizationId, token, workspaceId }: Pr
       </div>
 
       {loading ? (
-        <div>{[1,2,3].map(i => <div key={i} className="skeleton skeleton-card" style={{ height: 100 }} />)}</div>
+        <div className="skeleton-page-list">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="skeleton-list-item">
+              <div className="skeleton-text">
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <div className="skeleton" style={{ width: 60, height: 22, borderRadius: 12 }} />
+                  <div className="skeleton" style={{ width: 80, height: 22, borderRadius: 12 }} />
+                </div>
+                <div className="skeleton skeleton-line w70" />
+              </div>
+              <div className="skeleton skeleton-line" style={{ width: 80, flexShrink: 0 }} />
+            </div>
+          ))}
+        </div>
       ) : filtered.length === 0 ? (
         <div style={{ color: '#888', textAlign: 'center', padding: 60 }}>
           {search ? `No decisions match "${search}"` : 'No decisions recorded yet. The agent extracts these from meetings and docs automatically.'}

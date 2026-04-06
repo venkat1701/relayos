@@ -159,6 +159,25 @@ export default function DraftsPage({ organizationId, token }: Props) {
         <p>Review, edit, and approve AI-drafted emails before they're sent. Nothing goes out without your approval.</p>
       </div>
 
+      {loading ? (
+        <div className="dr-layout">
+          <div style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 12, padding: 16 }}>
+            {[1,2,3,4].map(i => (
+              <div key={i} style={{ padding: '14px 0', borderBottom: '1px solid #111' }}>
+                <div className="skeleton skeleton-line w70" />
+                <div className="skeleton skeleton-line w40" style={{ marginTop: 8 }} />
+              </div>
+            ))}
+          </div>
+          <div style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 12, padding: 24 }}>
+            <div className="skeleton skeleton-line w50" style={{ height: 20, marginBottom: 20 }} />
+            <div className="skeleton skeleton-line w80" />
+            <div className="skeleton skeleton-line w90" />
+            <div className="skeleton" style={{ height: 160, marginTop: 16, borderRadius: 8 }} />
+          </div>
+        </div>
+      ) : (
+
       <div className="dr-layout">
         <div className="dr-list">
           {pending.length > 0 && (
@@ -259,6 +278,8 @@ export default function DraftsPage({ organizationId, token }: Props) {
           )}
         </div>
       </div>
+
+      )}
 
       {msg && <div className="dr-msg">{msg}</div>}
     </div>

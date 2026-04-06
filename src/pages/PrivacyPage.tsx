@@ -6,7 +6,7 @@ export function PrivacyPage() {
       <div className="legal-shell">
         <header className="legal-header">
           <Link to="/" className="legal-home">
-            Chief of Staff
+            RelayOS
           </Link>
           <div className="legal-links">
             <Link to="/terms">Terms</Link>
@@ -16,7 +16,7 @@ export function PrivacyPage() {
 
         <main className="legal-card">
           <p className="legal-kicker">Privacy Policy</p>
-          <h1>Chief of Staff Privacy Policy</h1>
+          <h1>RelayOS Privacy Policy</h1>
           <p className="legal-updated">Effective date: March 30, 2026</p>
 
           <section>
@@ -32,7 +32,7 @@ export function PrivacyPage() {
           <section>
             <h2>How we use information</h2>
             <p>
-              We use your information to operate the Chief of Staff product, authenticate users,
+              We use your information to operate the RelayOS product, authenticate users,
               synchronize connected services, generate briefings and recommendations, improve product
               reliability, monitor abuse, and communicate service updates or security notices.
             </p>

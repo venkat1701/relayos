@@ -273,7 +273,7 @@ export function CalendarPage({
             ))}
             {!upcomingMeetings.length ? (
               <div className="empty-message">
-                <span className="empty-icon">◐</span>
+                <i className="fi fi-rr-calendar empty-icon" />
                 <p>No meetings found for this workspace.</p>
               </div>
             ) : null}
@@ -451,7 +451,7 @@ export function CalendarPage({
             </>
           ) : (
             <div className="empty-message">
-              <span className="empty-icon">◐</span>
+              <i className="fi fi-rr-calendar empty-icon" />
               <p>Select a meeting or use Schedule Meeting to book a new one.</p>
             </div>
           )}

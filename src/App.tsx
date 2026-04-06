@@ -1,5 +1,5 @@
 /**
- * Modern Chief of Staff App with React Router
+ * Modern RelayOS App with React Router
  */
 
 import { useEffect, useState } from "react";
@@ -40,6 +40,7 @@ import { ChatAssistant } from "./components/ChatAssistant";
 import { ApprovalNotifications } from "./components/ApprovalNotifications";
 
 // Operational intelligence pages
+import { OnboardingPage } from "./pages/OnboardingPage";
 import CommandCenterPage from "./pages/CommandCenterPage";
 import CommitmentsPage from "./pages/CommitmentsPage";
 import GoalsPage from "./pages/GoalsPage";
@@ -50,9 +51,11 @@ import WorkspacesPage from "./pages/WorkspacesPage";
 import WhatsAppPage from "./pages/WhatsAppPage";
 import AgentCustomizePage from "./pages/AgentCustomizePage";
 import DraftsPage from "./pages/DraftsPage";
+import AgentBuilderPage from "./pages/AgentBuilderPage";
 
-const TOKEN_STORAGE_KEY = "chief_of_staff_access_token";
-const ORG_STORAGE_KEY = "chief_of_staff_organization_id";
+const TOKEN_STORAGE_KEY = "relayos_access_token";
+const ORG_STORAGE_KEY = "relayos_organization_id";
+const ONBOARDING_STORAGE_KEY = "relayos_onboarding_complete";
 
 interface Toast {
   id: number;
@@ -65,14 +68,14 @@ let toastId = 0;
 function App() {
   const [token, setToken] = useState<string | null>(() => getStoredValue(TOKEN_STORAGE_KEY));
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(
-    () => getStoredValue("chief_of_staff_workspace_id"),
+    () => getStoredValue("relayos_workspace_id"),
   );
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const handleWorkspaceSelect = (id: string | null) => {
     setActiveWorkspaceId(id);
-    if (id) setStoredValue("chief_of_staff_workspace_id", id);
-    else removeStoredValue("chief_of_staff_workspace_id");
+    if (id) setStoredValue("relayos_workspace_id", id);
+    else removeStoredValue("relayos_workspace_id");
   };
 
   const addToast = (message: string, type: Toast["type"] = "info") => {
@@ -97,6 +100,8 @@ function App() {
   const [agentRunning, setAgentRunning] = useState(false);
   const [briefGenerating, setBriefGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [workspaceLoading, setWorkspaceLoading] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -195,6 +200,7 @@ function App() {
   };
 
   const loadWorkspace = async (orgId: string) => {
+    setWorkspaceLoading(true);
     try {
       const [timelineData, tasksData, threadData, messageData, meetingData, documentData, briefData, integrationsData] = await Promise.all([
         apiRequest<TimelineResponse>(
@@ -240,6 +246,8 @@ function App() {
       setIntegrations(integrationsData);
     } catch (error) {
       console.error("Failed to load workspace:", error);
+    } finally {
+      setWorkspaceLoading(false);
     }
   };
 
@@ -357,17 +365,41 @@ function App() {
   const approvals = timeline?.approvals || [];
   const actionableTasks = allTasks.length ? allTasks : syntheticTasks;
 
+  // Onboarding: show wizard if user hasn't completed it AND has no integrations
+  const onboardingComplete = getStoredValue(ONBOARDING_STORAGE_KEY) === "true";
+  const needsOnboarding = isAuthenticated && !onboardingComplete && integrations.length === 0;
+  const authRedirect = needsOnboarding ? "/onboarding" : "/command";
+
+  const handleOnboardingComplete = () => {
+    setStoredValue(ONBOARDING_STORAGE_KEY, "true");
+  };
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to="/command" /> : <LandingPage />} />
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/command" /> : <AuthPage mode="login" onLogin={handleLogin} onRegister={handleRegister} />} />
-        <Route path="/register" element={isAuthenticated ? <Navigate to="/command" /> : <AuthPage mode="register" onLogin={handleLogin} onRegister={handleRegister} />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to={authRedirect} /> : <LandingPage />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to={authRedirect} /> : <AuthPage mode="login" onLogin={handleLogin} onRegister={handleRegister} />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to={authRedirect} /> : <AuthPage mode="register" onLogin={handleLogin} onRegister={handleRegister} />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
 
+        {/* Onboarding route - outside DashboardLayout, no sidebar */}
+        {isAuthenticated && (
+          <Route path="/onboarding" element={
+            onboardingComplete
+              ? <Navigate to="/command" />
+              : <OnboardingPage
+                  selectedOrganizationId={selectedOrganizationId}
+                  integrations={integrations}
+                  token={token || ""}
+                  onComplete={handleOnboardingComplete}
+                  onConnectGoogle={() => handleConnectIntegration("google")}
+                />
+          } />
+        )}
+
         {isAuthenticated ? (
-          <Route path="/*" element={<DashboardLayout user={user} onLogout={handleLogout} organizationId={selectedOrganizationId} token={token || ""} activeWorkspaceId={activeWorkspaceId} onWorkspaceSelect={handleWorkspaceSelect}><Routes>
+          <Route path="/*" element={<DashboardLayout user={user} onLogout={handleLogout} organizationId={selectedOrganizationId} token={token || ""} activeWorkspaceId={activeWorkspaceId} onWorkspaceSelect={handleWorkspaceSelect} onSidebarToggle={setSidebarCollapsed} workspaceLoading={workspaceLoading}><Routes>
             <Route path="/command" element={<CommandCenterPage organizationId={selectedOrganizationId} token={token || ""} workspaceId={activeWorkspaceId} />} />
             <Route path="/dashboard" element={<DashboardPage tasks={actionableTasks as any} meetings={meetings as any} emails={threads as any} briefs={briefs as any} approvals={approvals} onGenerateBrief={handleGenerateBrief} generatingBrief={briefGenerating} />} />
             <Route path="/tasks" element={<TaskTriage tasks={actionableTasks as any} onTaskMove={async (taskId, newQuadrant) => {
@@ -391,6 +423,7 @@ function App() {
             <Route path="/whatsapp" element={<WhatsAppPage organizationId={selectedOrganizationId} token={token || ""} />} />
             <Route path="/agent-studio" element={<AgentCustomizePage organizationId={selectedOrganizationId} token={token || ""} />} />
             <Route path="/drafts" element={<DraftsPage organizationId={selectedOrganizationId} token={token || ""} />} />
+            <Route path="/agents/builder" element={<AgentBuilderPage organizationId={selectedOrganizationId} token={token || ""} />} />
             <Route path="/timeline" element={<TimelinePage events={timeline?.events || []} />} />
             <Route path="/settings" element={<SettingsPage
               agentRunning={agentRunning}
@@ -417,6 +450,7 @@ function App() {
           organizationId={selectedOrganizationId}
           token={token}
           onApprovalDecided={() => loadWorkspace(selectedOrganizationId)}
+          sidebarCollapsed={sidebarCollapsed}
         />
       )}
       {/* Toast Notifications */}

@@ -91,8 +91,20 @@ export default function CommandCenterPage({ organizationId, token, workspaceId }
         </div>
       )}
 
+      {loading && (
+        <div className="cc-grid" style={{ marginBottom: 24 }}>
+          {[1,2,3,4,5,6].map(i => (
+            <div key={i} className="cc-card">
+              <div className="skeleton skeleton-line w40" style={{ height: 12, marginBottom: 16 }} />
+              <div className="skeleton skeleton-line w60" style={{ height: 32, marginBottom: 8 }} />
+              <div className="skeleton skeleton-line w50" style={{ height: 12 }} />
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Crisis Banner */}
-      {crisis && crisis.level !== 'normal' && (
+      {!loading && crisis && crisis.level !== 'normal' && (
         <div className="crisis-banner" style={{ background: `${crisisColor}15`, border: `1px solid ${crisisColor}40` }}>
           <div style={{ fontSize: 36, fontWeight: 800, color: crisisColor }}>{crisisIcon}</div>
           <div style={{ flex: 1 }}>
@@ -110,10 +122,10 @@ export default function CommandCenterPage({ organizationId, token, workspaceId }
       )}
 
       {/* Context Questions from Agent */}
-      <ContextQuestions organizationId={organizationId} token={token} workspaceId={workspaceId} />
+      {!loading && <ContextQuestions organizationId={organizationId} token={token} workspaceId={workspaceId} />}
 
       {/* Main Grid */}
-      <div className="cc-grid">
+      {!loading && <div className="cc-grid fade-in">
         {/* Commitments */}
         <div className="cc-card">
           <div className="cc-card-header">
@@ -268,7 +280,7 @@ export default function CommandCenterPage({ organizationId, token, workspaceId }
             ))}
           </div>
         )}
-      </div>
+      </div>}
     </div>
   );
 }
