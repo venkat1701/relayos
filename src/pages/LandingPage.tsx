@@ -1,367 +1,1425 @@
 /**
- * Chief of Staff OS — Landing Page
- * YC-style: clear value prop, descriptive features, pricing, social proof
+ * RelayOS — Landing Page
+ * Modern YC-style: gradient hero, glassmorphism cards, scroll animations
  */
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
 
 export function LandingPage() {
-  const navigate = useNavigate();
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("ro-visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    const elements = document.querySelectorAll(".ro-animate");
+    elements.forEach((el) => observerRef.current?.observe(el));
+
+    return () => observerRef.current?.disconnect();
+  }, []);
+
+  const scrollToFeatures = () => {
+    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <div className="lp">
-      {/* Nav */}
-      <nav className="lp-nav">
-        <div className="lp-nav-inner">
-          <div className="lp-logo">
-            <div className="lp-logo-mark noise">CS</div>
-            <span>Chief of Staff</span>
+    <div className="ro">
+      {/* ===================== NAV ===================== */}
+      <nav className="ro-nav">
+        <div className="ro-nav-inner">
+          <div className="ro-logo">
+            <div className="ro-logo-mark">R</div>
+            <span>RelayOS</span>
           </div>
-          <div className="lp-nav-links">
+          <div className="ro-nav-links">
             <a href="#features">Features</a>
-            <a href="#how">How it works</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#how-it-works">How It Works</a>
           </div>
-          <div className="lp-nav-actions">
-            <button onClick={() => navigate("/login")} className="lp-btn-ghost">Sign In</button>
-            <button onClick={() => navigate("/register")} className="lp-btn-primary">Get Started Free</button>
+          <div className="ro-nav-actions">
+            <Link to="/login" className="ro-btn-ghost">Sign In</Link>
+            <Link to="/register" className="ro-btn-primary">Get Started Free</Link>
           </div>
+          {/* Mobile menu toggle */}
+          <button className="ro-mobile-toggle" onClick={(e) => {
+            const nav = (e.currentTarget as HTMLElement).closest('.ro-nav');
+            nav?.classList.toggle('ro-nav-open');
+          }}>
+            <span /><span /><span />
+          </button>
+        </div>
+        <div className="ro-mobile-menu">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How It Works</a>
+          <Link to="/login">Sign In</Link>
+          <Link to="/register" className="ro-btn-primary" style={{ textAlign: 'center' }}>Get Started Free</Link>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="lp-hero">
-        <div className="lp-hero-badge">Backed by AI. Built for operators.</div>
-        <h1>The operating system<br />for your <span className="lp-gradient-text">Chief of Staff</span></h1>
-        <p className="lp-hero-sub">
-          An autonomous agent that sits on Calendar, Gmail, Docs, and Sheets — understands
-          commitments, priorities, risks, and rhythms — then pushes work forward
-          without you having to remember everything.
-        </p>
-        <div className="lp-hero-actions">
-          <button onClick={() => navigate("/register")} className="lp-btn-hero">Start Free — No Card Required</button>
-        </div>
-        <div className="lp-hero-proof">
-          <span>Trusted by founders, operators, and executive teams</span>
-        </div>
-
-        {/* Preview */}
-        <div className="lp-preview">
-          <div className="lp-preview-bar">
-            <div className="lp-dots"><span /><span /><span /></div>
-            <span>Command Center</span>
+      {/* ===================== HERO ===================== */}
+      <section className="ro-hero">
+        <div className="ro-hero-gradient" />
+        <div className="ro-hero-grid-bg" />
+        <div className="ro-hero-content">
+          <div className="ro-hero-badge ro-animate">
+            <span className="ro-badge-dot" />
+            Now in Early Access
           </div>
-          <div className="lp-preview-grid">
-            <div className="lp-pv-card">
-              <div className="lp-pv-num" style={{ color: '#CC2936' }}>3</div>
-              <div className="lp-pv-label">Overdue commitments</div>
-            </div>
-            <div className="lp-pv-card">
-              <div className="lp-pv-num" style={{ color: '#00A7E1' }}>2</div>
-              <div className="lp-pv-label">Decisions pending</div>
-            </div>
-            <div className="lp-pv-card">
-              <div className="lp-pv-num" style={{ color: '#4ade80' }}>Normal</div>
-              <div className="lp-pv-label">Crisis level</div>
-            </div>
-            <div className="lp-pv-card lp-pv-wide">
-              <div className="lp-pv-label" style={{ color: '#DEC0F1', fontWeight: 600 }}>Weekly Plan</div>
-              <div className="lp-pv-sub">67% meeting load — 3 recommendations — 8 priority items</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Problem */}
-      <section className="lp-section" style={{ borderTop: '1px solid #1a1a1a' }}>
-        <div className="lp-section-inner">
-          <h2>The problem is not productivity.<br />It's <span style={{ color: '#CC2936' }}>operational coherence</span>.</h2>
-          <p className="lp-section-sub">
-            Your calendar is full of meetings that don't move things forward. Your email has 40 threads with hidden commitments.
-            Your docs contain decisions nobody remembers. Your sheets have metrics nobody checks. You're the most productive
-            person in the room — and still dropping balls.
+          <h1 className="ro-animate">
+            Your AI Operating System
+            <br />
+            <span className="ro-gradient-text">for Work</span>
+          </h1>
+          <p className="ro-hero-sub ro-animate">
+            RelayOS is an AI-powered executive assistant that autonomously manages
+            your email, calendar, tasks, and decisions — so you can focus on what
+            actually matters.
           </p>
-          <div className="lp-problem-grid">
-            <div className="lp-problem-item">
-              <div className="lp-problem-icon" style={{ borderColor: '#CC293640' }}>!</div>
-              <h4>Commitments decay silently</h4>
-              <p>"I'll send that by Thursday" — nobody tracked it, Thursday passed, trust eroded.</p>
-            </div>
-            <div className="lp-problem-item">
-              <div className="lp-problem-icon" style={{ borderColor: '#f0a03040' }}>?</div>
-              <h4>Decisions vanish into docs</h4>
-              <p>You decided something in a meeting. It's in a doc. Nobody remembers. You re-decide it.</p>
-            </div>
-            <div className="lp-problem-item">
-              <div className="lp-problem-icon" style={{ borderColor: '#00A7E140' }}>~</div>
-              <h4>Context is scattered</h4>
-              <p>The same project shows up as an email, a meeting topic, a doc, and a row in a sheet. Good luck stitching that together.</p>
-            </div>
+          <div className="ro-hero-actions ro-animate">
+            <Link to="/register" className="ro-btn-hero">
+              Get Started Free
+              <span className="ro-btn-arrow">&rarr;</span>
+            </Link>
+            <button onClick={scrollToFeatures} className="ro-btn-demo">
+              See How It Works
+              <span className="ro-btn-chevron">&darr;</span>
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="lp-section" id="features">
-        <div className="lp-section-inner">
-          <div className="lp-section-label">CAPABILITIES</div>
-          <h2>Not another dashboard.<br />A continuous <span className="lp-gradient-text">operational reasoning system</span>.</h2>
-          <div className="lp-features-grid">
-            {[
-              { title: "Morning Briefing", desc: "What needs attention today. What changed overnight. Which decisions are pending. Where follow-up is overdue. Generated automatically, every morning.", color: "#00A7E1" },
-              { title: "Commitment Tracking", desc: "Every promise made or received — extracted from emails, meetings, docs. Tracked with deadlines. Nudges sent when overdue. No more polite collective forgetting.", color: "#DEC0F1" },
-              { title: "Decision Ledger", desc: "Every decision recorded with rationale, impact, and execution status. The agent detects when a decision was made but never executed.", color: "#4ade80" },
-              { title: "Meeting Prep", desc: "Before every meeting: prior decisions, unresolved items, attendee context, relevant risks, suggested agenda. Auto-generated, workspace-scoped.", color: "#f0a030" },
-              { title: "Calendar Intelligence", desc: "Time allocation analysis. Fragmentation detection. Focus time protection. Meeting optimization. Goal alignment checks.", color: "#00A7E1" },
-              { title: "Risk Monitoring", desc: "Risks extracted from emails, meetings, docs. Severity scoring. Crisis detection when signals spike across multiple dimensions.", color: "#CC2936" },
-              { title: "Workspace Isolation", desc: "Each workspace scopes what the agent sees. Product launch doesn't mix with hiring. Board prep doesn't leak into engineering.", color: "#DEC0F1" },
-              { title: "500+ Tool Integrations", desc: "Gmail, Calendar, Drive, Docs, Sheets natively. Slack, Notion, Fireflies, WhatsApp, and 500+ more via Composio.", color: "#4ade80" },
-              { title: "Autonomous Agent", desc: "Three modes: Advisory (suggests), Delegated (acts on low-risk), Autonomous (operates independently). You control the dial.", color: "#f0a030" },
-            ].map((f, i) => (
-              <div key={i} className="lp-feature-card">
-                <div className="lp-feature-dot" style={{ background: f.color }} />
-                <h4>{f.title}</h4>
-                <p>{f.desc}</p>
-              </div>
-            ))}
+      {/* ===================== FEATURES ===================== */}
+      <section className="ro-section" id="features">
+        <div className="ro-section-inner">
+          <div className="ro-section-header ro-animate">
+            <span className="ro-section-label">Features</span>
+            <h2>Everything you need to<br /><span className="ro-gradient-text">operate at 10x</span></h2>
+            <p className="ro-section-sub">
+              Four intelligent systems that work together to eliminate busywork
+              and keep your operations running autonomously.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* How it works */}
-      <section className="lp-section" id="how" style={{ borderTop: '1px solid #1a1a1a' }}>
-        <div className="lp-section-inner">
-          <div className="lp-section-label">HOW IT WORKS</div>
-          <h2>Connect. Understand. Operate.</h2>
-          <div className="lp-steps">
-            {[
-              { step: "1", title: "Connect your workspace", desc: "Link Gmail, Calendar, Drive. Optionally connect Slack, Notion, Fireflies, WhatsApp via Composio. Takes 2 minutes." },
-              { step: "2", title: "Agent builds your model", desc: "The agent reads your workspace: recurring meetings, collaborators, initiatives, trackers, decision docs. It builds a living model of your operational reality." },
-              { step: "3", title: "You get an operator", desc: "Commitments tracked. Decisions recorded. Risks flagged. Meeting prep generated. Follow-ups nudged. Calendar optimized. Weekly plans proposed. All autonomous." },
-            ].map((s, i) => (
-              <div key={i} className="lp-step">
-                <div className="lp-step-num">{s.step}</div>
-                <div>
-                  <h4>{s.title}</h4>
-                  <p>{s.desc}</p>
+          {/* Feature 1 - Text Left */}
+          <div className="ro-feature-row ro-animate">
+            <div className="ro-feature-text">
+              <span className="ro-feature-num">01</span>
+              <h3>Intelligent Email Triage</h3>
+              <p>
+                RelayOS reads every incoming email, scores it by priority and urgency,
+                and drafts contextual responses for the ones that actually need your
+                attention. Newsletters, notifications, and noise get filtered out
+                automatically. You only see what matters.
+              </p>
+              <ul className="ro-feature-list">
+                <li>AI priority scoring for every message</li>
+                <li>Auto-drafted responses for human emails</li>
+                <li>Smart filtering that learns your preferences</li>
+              </ul>
+            </div>
+            <div className="ro-feature-visual">
+              <div className="ro-fv-card ro-glass">
+                <div className="ro-fv-inbox">
+                  <div className="ro-fv-mail ro-fv-high">
+                    <div className="ro-fv-mail-dot" style={{ background: '#CC2936' }} />
+                    <div className="ro-fv-mail-lines">
+                      <div className="ro-fv-line" style={{ width: '60%' }} />
+                      <div className="ro-fv-line" style={{ width: '80%', opacity: 0.4 }} />
+                    </div>
+                    <span className="ro-fv-badge" style={{ background: '#CC293620', color: '#CC2936' }}>Urgent</span>
+                  </div>
+                  <div className="ro-fv-mail ro-fv-med">
+                    <div className="ro-fv-mail-dot" style={{ background: '#00A7E1' }} />
+                    <div className="ro-fv-mail-lines">
+                      <div className="ro-fv-line" style={{ width: '50%' }} />
+                      <div className="ro-fv-line" style={{ width: '70%', opacity: 0.4 }} />
+                    </div>
+                    <span className="ro-fv-badge" style={{ background: '#00A7E120', color: '#00A7E1' }}>Review</span>
+                  </div>
+                  <div className="ro-fv-mail ro-fv-low">
+                    <div className="ro-fv-mail-dot" style={{ background: 'rgba(236,228,183,0.2)' }} />
+                    <div className="ro-fv-mail-lines">
+                      <div className="ro-fv-line" style={{ width: '45%' }} />
+                      <div className="ro-fv-line" style={{ width: '65%', opacity: 0.4 }} />
+                    </div>
+                    <span className="ro-fv-badge" style={{ background: 'rgba(236,228,183,0.05)', color: 'rgba(236,228,183,0.35)' }}>Filtered</span>
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Feature 2 - Text Right */}
+          <div className="ro-feature-row ro-reverse ro-animate">
+            <div className="ro-feature-text">
+              <span className="ro-feature-num">02</span>
+              <h3>Autonomous Calendar Management</h3>
+              <p>
+                Your calendar becomes intelligent. RelayOS handles scheduling requests,
+                generates meeting prep briefs with full context, and optimizes your
+                week for focus time. It knows your preferences and protects your
+                most productive hours.
+              </p>
+              <ul className="ro-feature-list">
+                <li>Automated scheduling and conflict resolution</li>
+                <li>Pre-meeting briefs with attendee context</li>
+                <li>Focus time protection and optimization</li>
+              </ul>
+            </div>
+            <div className="ro-feature-visual">
+              <div className="ro-fv-card ro-glass">
+                <div className="ro-fv-calendar">
+                  <div className="ro-fv-cal-header">
+                    <div className="ro-fv-line" style={{ width: '30%', background: '#fff', height: '10px' }} />
+                  </div>
+                  <div className="ro-fv-cal-grid">
+                    <div className="ro-fv-cal-block" style={{ background: '#00A7E120', borderLeft: '3px solid #00A7E1', height: '48px' }}>
+                      <div className="ro-fv-line" style={{ width: '60%', height: '6px' }} />
+                    </div>
+                    <div className="ro-fv-cal-block ro-fv-focus" style={{ background: '#DEC0F110', borderLeft: '3px solid #DEC0F1', height: '64px' }}>
+                      <div className="ro-fv-line" style={{ width: '40%', height: '6px' }} />
+                      <span className="ro-fv-cal-tag">Focus Time</span>
+                    </div>
+                    <div className="ro-fv-cal-block" style={{ background: '#00A7E120', borderLeft: '3px solid #00A7E1', height: '36px' }}>
+                      <div className="ro-fv-line" style={{ width: '55%', height: '6px' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Feature 3 - Text Left */}
+          <div className="ro-feature-row ro-animate">
+            <div className="ro-feature-text">
+              <span className="ro-feature-num">03</span>
+              <h3>Custom Agent Builder</h3>
+              <p>
+                Build AI agents tailored to your exact workflows. Connect any tool,
+                define triggers and actions, and let your custom agents handle
+                repetitive operational tasks end-to-end. No code required.
+              </p>
+              <ul className="ro-feature-list">
+                <li>Visual workflow builder for any process</li>
+                <li>500+ tool integrations via Composio</li>
+                <li>Trigger-based automation with human-in-the-loop</li>
+              </ul>
+            </div>
+            <div className="ro-feature-visual">
+              <div className="ro-fv-card ro-glass">
+                <div className="ro-fv-builder">
+                  <div className="ro-fv-node ro-fv-node-trigger">
+                    <div className="ro-fv-node-icon" style={{ background: '#00A7E120', borderColor: '#00A7E140' }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#00A7E1' }} />
+                    </div>
+                    <div className="ro-fv-line" style={{ width: '50%', height: '6px' }} />
+                  </div>
+                  <div className="ro-fv-connector" />
+                  <div className="ro-fv-node">
+                    <div className="ro-fv-node-icon" style={{ background: '#DEC0F110', borderColor: '#DEC0F140' }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 2, background: '#DEC0F1' }} />
+                    </div>
+                    <div className="ro-fv-line" style={{ width: '60%', height: '6px' }} />
+                  </div>
+                  <div className="ro-fv-connector" />
+                  <div className="ro-fv-node">
+                    <div className="ro-fv-node-icon" style={{ background: '#4ade8020', borderColor: '#4ade8040' }}>
+                      <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '8px solid #4ade80' }} />
+                    </div>
+                    <div className="ro-fv-line" style={{ width: '45%', height: '6px' }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Feature 4 - Text Right */}
+          <div className="ro-feature-row ro-reverse ro-animate">
+            <div className="ro-feature-text">
+              <span className="ro-feature-num">04</span>
+              <h3>Decision Intelligence</h3>
+              <p>
+                Every decision, commitment, and goal is tracked with full context.
+                RelayOS detects when promises go unfulfilled, deadlines slip, and
+                decisions stall — then surfaces the right information at the right
+                time so nothing falls through the cracks.
+              </p>
+              <ul className="ro-feature-list">
+                <li>Automatic commitment extraction from emails and meetings</li>
+                <li>Decision ledger with rationale and status tracking</li>
+                <li>Proactive alerts when things go off track</li>
+              </ul>
+            </div>
+            <div className="ro-feature-visual">
+              <div className="ro-fv-card ro-glass">
+                <div className="ro-fv-decisions">
+                  <div className="ro-fv-decision-item">
+                    <div className="ro-fv-decision-status" style={{ background: '#4ade80' }} />
+                    <div style={{ flex: 1 }}>
+                      <div className="ro-fv-line" style={{ width: '70%', height: '8px', marginBottom: 6 }} />
+                      <div className="ro-fv-line" style={{ width: '50%', opacity: 0.4 }} />
+                    </div>
+                    <span className="ro-fv-badge" style={{ background: '#4ade8020', color: '#4ade80' }}>On Track</span>
+                  </div>
+                  <div className="ro-fv-decision-item">
+                    <div className="ro-fv-decision-status" style={{ background: '#f0a030' }} />
+                    <div style={{ flex: 1 }}>
+                      <div className="ro-fv-line" style={{ width: '60%', height: '8px', marginBottom: 6 }} />
+                      <div className="ro-fv-line" style={{ width: '45%', opacity: 0.4 }} />
+                    </div>
+                    <span className="ro-fv-badge" style={{ background: '#f0a03020', color: '#f0a030' }}>At Risk</span>
+                  </div>
+                  <div className="ro-fv-decision-item">
+                    <div className="ro-fv-decision-status" style={{ background: '#CC2936' }} />
+                    <div style={{ flex: 1 }}>
+                      <div className="ro-fv-line" style={{ width: '55%', height: '8px', marginBottom: 6 }} />
+                      <div className="ro-fv-line" style={{ width: '40%', opacity: 0.4 }} />
+                    </div>
+                    <span className="ro-fv-badge" style={{ background: '#CC293620', color: '#CC2936' }}>Overdue</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="lp-section" id="pricing">
-        <div className="lp-section-inner">
-          <div className="lp-section-label">PRICING</div>
-          <h2>Simple pricing. No surprises.</h2>
-          <p className="lp-section-sub">Start free. Upgrade when the agent earns its keep.</p>
-          <div className="lp-pricing-grid">
-            <div className="lp-price-card">
-              <div className="lp-price-name">Starter</div>
-              <div className="lp-price-amount">$0<span>/mo</span></div>
-              <div className="lp-price-desc">For individuals getting started</div>
-              <ul className="lp-price-features">
-                <li>Google Workspace integration</li>
-                <li>Daily executive briefing</li>
-                <li>Commitment tracking (up to 50)</li>
-                <li>Basic meeting prep</li>
-                <li>Advisory mode only</li>
-              </ul>
-              <button onClick={() => navigate("/register")} className="lp-btn-price">Get Started Free</button>
+      {/* ===================== HOW IT WORKS ===================== */}
+      <section className="ro-section ro-how" id="how-it-works">
+        <div className="ro-section-inner">
+          <div className="ro-section-header ro-animate">
+            <span className="ro-section-label">How It Works</span>
+            <h2>Three steps to<br /><span className="ro-gradient-text">autonomous operations</span></h2>
+          </div>
+          <div className="ro-steps">
+            <div className="ro-step ro-animate">
+              <div className="ro-step-number">
+                <span>1</span>
+              </div>
+              <div className="ro-step-line" />
+              <h4>Connect</h4>
+              <p>
+                Link your Gmail, Calendar, and Drive. Add Slack, Notion, or 500+ other
+                tools through Composio. Setup takes two minutes.
+              </p>
             </div>
-            <div className="lp-price-card featured">
-              <div className="lp-price-badge">Most Popular</div>
-              <div className="lp-price-name">Pro</div>
-              <div className="lp-price-amount">$49<span>/mo</span></div>
-              <div className="lp-price-desc">For operators who want full autonomy</div>
-              <ul className="lp-price-features">
-                <li>Everything in Starter</li>
-                <li>Unlimited commitments & decisions</li>
-                <li>Workspace context isolation</li>
-                <li>Slack, Notion, Fireflies, WhatsApp</li>
-                <li>Delegated + Autonomous modes</li>
-                <li>Weekly planning & calendar optimization</li>
-                <li>Crisis detection & risk monitoring</li>
-                <li>Rich document editor with AI suggestions</li>
-              </ul>
-              <button onClick={() => navigate("/register")} className="lp-btn-price featured">Start 14-Day Trial</button>
+            <div className="ro-step ro-animate">
+              <div className="ro-step-number">
+                <span>2</span>
+              </div>
+              <div className="ro-step-line" />
+              <h4>Configure</h4>
+              <p>
+                Set your preferences, create custom agents, and define your workflows.
+                RelayOS learns your priorities and communication style.
+              </p>
             </div>
-            <div className="lp-price-card">
-              <div className="lp-price-name">Team</div>
-              <div className="lp-price-amount">$149<span>/mo</span></div>
-              <div className="lp-price-desc">For leadership teams and orgs</div>
-              <ul className="lp-price-features">
-                <li>Everything in Pro</li>
-                <li>Up to 10 team members</li>
-                <li>Shared workspaces</li>
-                <li>Cross-team dependency tracking</li>
-                <li>Custom integrations</li>
-                <li>Priority support</li>
-              </ul>
-              <button onClick={() => navigate("/register")} className="lp-btn-price">Contact Sales</button>
+            <div className="ro-step ro-animate">
+              <div className="ro-step-number">
+                <span>3</span>
+              </div>
+              <div className="ro-step-line ro-step-line-hidden" />
+              <h4>Operate</h4>
+              <p>
+                RelayOS takes over. Emails triaged, meetings prepped, decisions tracked,
+                follow-ups sent. You focus on high-leverage work.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="lp-cta noise">
-        <h2>Stop managing work manually.<br />Let the agent operate.</h2>
-        <p>14 days free. No credit card. Cancel anytime.</p>
-        <button onClick={() => navigate("/register")} className="lp-btn-cta">Get Started Free</button>
+      {/* ===================== FINAL CTA ===================== */}
+      <section className="ro-cta-section">
+        <div className="ro-cta-gradient" />
+        <div className="ro-cta-content ro-animate">
+          <h2>Ready to 10x your productivity?</h2>
+          <p>
+            Join teams already using RelayOS to run their operations on autopilot.
+            Free to start. No credit card required.
+          </p>
+          <Link to="/register" className="ro-btn-hero ro-btn-cta-main">
+            Get Started Free
+            <span className="ro-btn-arrow">&rarr;</span>
+          </Link>
+        </div>
       </section>
 
-      {/* Footer */}
-      <footer className="lp-footer">
-        <div className="lp-footer-inner">
-          <div className="lp-logo">
-            <div className="lp-logo-mark">CS</div>
-            <span>Chief of Staff</span>
+      {/* ===================== FOOTER ===================== */}
+      <footer className="ro-footer">
+        <div className="ro-footer-inner">
+          <div className="ro-footer-top">
+            <div className="ro-footer-brand">
+              <div className="ro-logo">
+                <div className="ro-logo-mark">R</div>
+                <span>RelayOS</span>
+              </div>
+              <p className="ro-footer-tagline">
+                Your AI operating system for work.
+              </p>
+            </div>
+            <div className="ro-footer-columns">
+              <div className="ro-footer-col">
+                <h5>Product</h5>
+                <a href="#features">Features</a>
+                <a href="#" onClick={(e) => e.preventDefault()}>Pricing</a>
+                <a href="#" onClick={(e) => e.preventDefault()}>Docs</a>
+              </div>
+              <div className="ro-footer-col">
+                <h5>Company</h5>
+                <a href="#" onClick={(e) => e.preventDefault()}>About</a>
+                <a href="#" onClick={(e) => e.preventDefault()}>Blog</a>
+                <a href="#" onClick={(e) => e.preventDefault()}>Careers</a>
+              </div>
+              <div className="ro-footer-col">
+                <h5>Legal</h5>
+                <Link to="/privacy">Privacy Policy</Link>
+                <Link to="/terms">Terms of Service</Link>
+              </div>
+              <div className="ro-footer-col">
+                <h5>Contact</h5>
+                <a href="mailto:krish@getmetacognition.com">krish@getmetacognition.com</a>
+              </div>
+            </div>
           </div>
-          <div className="lp-footer-meta">
-            <p>2026 Chief of Staff OS. All rights reserved.</p>
-            <div className="lp-footer-links">
-              <Link to="/privacy">Privacy</Link>
-              <Link to="/terms">Terms</Link>
+          <div className="ro-footer-bottom">
+            <p>2025 RelayOS. All rights reserved.</p>
+            <div className="ro-footer-social">
+              {/* Twitter/X */}
+              <a href="#" onClick={(e) => e.preventDefault()} className="ro-social-icon" aria-label="Twitter">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                  <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+                </svg>
+              </a>
+              {/* LinkedIn */}
+              <a href="#" onClick={(e) => e.preventDefault()} className="ro-social-icon" aria-label="LinkedIn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="4" />
+                  <line x1="8" y1="11" x2="8" y2="16" />
+                  <line x1="8" y1="8" x2="8" y2="8.01" />
+                  <line x1="12" y1="16" x2="12" y2="11" />
+                  <path d="M16 16v-3a2 2 0 0 0-4 0" />
+                </svg>
+              </a>
+              {/* GitHub */}
+              <a href="#" onClick={(e) => e.preventDefault()} className="ro-social-icon" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                </svg>
+              </a>
             </div>
           </div>
         </div>
       </footer>
 
+      {/* ===================== STYLES ===================== */}
       <style>{`
-        .lp { min-height: 100vh; background: #020202; color: #ECE4B7; }
+        /* === Reset & Base === */
+        .ro {
+          min-height: 100vh;
+          background: #020202;
+          color: #ECE4B7;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+          overflow-x: hidden;
+          scroll-behavior: smooth;
+        }
 
-        /* Nav */
-        .lp-nav { position: sticky; top: 0; z-index: 100; background: rgba(2,2,2,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #1a1a1a; }
-        .lp-nav-inner { max-width: 1200px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
-        .lp-logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
-        .lp-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #00A7E1, #DEC0F1); color: #020202; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
-        .lp-nav-links { display: flex; gap: 32px; }
-        .lp-nav-links a { color: #888; font-size: 14px; text-decoration: none; transition: color 0.2s; }
-        .lp-nav-links a:hover { color: #ECE4B7; }
-        .lp-nav-actions { display: flex; gap: 10px; }
-        .lp-btn-ghost { padding: 8px 20px; border-radius: 8px; border: 1px solid #333; background: transparent; color: #ECE4B7; font-size: 13px; cursor: pointer; }
-        .lp-btn-primary { padding: 8px 20px; border-radius: 8px; border: none; background: #fff; color: #020202; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .ro *, .ro *::before, .ro *::after {
+          box-sizing: border-box;
+        }
 
-        /* Hero */
-        .lp-hero { max-width: 900px; margin: 0 auto; padding: 80px 32px 60px; text-align: center; }
-        .lp-hero-badge { display: inline-block; padding: 6px 16px; border: 1px solid #1a1a1a; border-radius: 20px; font-size: 13px; color: #888; margin-bottom: 28px; }
-        .lp-hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 24px; color: #fff; }
-        .lp-gradient-text { background: linear-gradient(135deg, #00A7E1, #DEC0F1, #CC2936); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .lp-hero-sub { font-size: 18px; line-height: 1.7; color: #888; max-width: 640px; margin: 0 auto 36px; }
-        .lp-hero-actions { margin-bottom: 16px; }
-        .lp-btn-hero { padding: 16px 36px; border-radius: 12px; border: none; background: #fff; color: #020202; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .lp-btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,255,255,0.1); }
-        .lp-hero-proof { color: #555; font-size: 13px; margin-top: 12px; }
+        /* === Scroll Animations === */
+        .ro-animate {
+          opacity: 0;
+          transform: translateY(28px);
+          transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-        /* Preview */
-        .lp-preview { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; max-width: 800px; margin: 48px auto 0; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        .lp-preview-bar { padding: 14px 20px; background: #0d0d0d; border-bottom: 1px solid #1a1a1a; display: flex; align-items: center; gap: 12px; }
-        .lp-dots { display: flex; gap: 6px; }
-        .lp-dots span { width: 10px; height: 10px; border-radius: 50%; }
-        .lp-dots span:nth-child(1) { background: #CC2936; }
-        .lp-dots span:nth-child(2) { background: #DEC0F1; }
-        .lp-dots span:nth-child(3) { background: #00A7E1; }
-        .lp-preview-bar span:last-child { color: #555; font-size: 13px; }
-        .lp-preview-grid { padding: 24px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-        .lp-pv-card { background: #080808; border: 1px solid #141414; border-radius: 10px; padding: 16px; }
-        .lp-pv-wide { grid-column: 1 / -1; }
-        .lp-pv-num { font-size: 28px; font-weight: 800; margin-bottom: 2px; }
-        .lp-pv-label { color: #888; font-size: 12px; }
-        .lp-pv-sub { color: #666; font-size: 12px; margin-top: 4px; }
+        .ro-animate.ro-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
 
-        /* Sections */
-        .lp-section { padding: 100px 32px; }
-        .lp-section-inner { max-width: 1100px; margin: 0 auto; }
-        .lp-section-label { color: #00A7E1; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
-        .lp-section h2 { font-size: 40px; font-weight: 800; line-height: 1.15; color: #fff; margin: 0 0 20px; }
-        .lp-section-sub { font-size: 17px; line-height: 1.7; color: #888; max-width: 600px; }
+        /* Stagger children */
+        .ro-feature-row.ro-visible { transition-delay: 0.05s; }
+        .ro-step:nth-child(2).ro-visible { transition-delay: 0.1s; }
+        .ro-step:nth-child(3).ro-visible { transition-delay: 0.2s; }
 
-        /* Problem */
-        .lp-problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
-        .lp-problem-item { padding: 28px; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 14px; }
-        .lp-problem-icon { width: 40px; height: 40px; border-radius: 10px; border: 2px solid; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #888; margin-bottom: 16px; }
-        .lp-problem-item h4 { font-size: 16px; font-weight: 700; color: #fff; margin: 0 0 8px; }
-        .lp-problem-item p { font-size: 14px; line-height: 1.6; color: #888; margin: 0; }
+        /* === Gradient Text === */
+        .ro-gradient-text {
+          background: linear-gradient(135deg, #00A7E1 0%, #DEC0F1 50%, #00A7E1 100%);
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: ro-gradient-shift 6s ease infinite;
+        }
 
-        /* Features */
-        .lp-features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
-        .lp-feature-card { padding: 24px; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; transition: all 0.2s; }
-        .lp-feature-card:hover { border-color: #333; transform: translateY(-2px); }
-        .lp-feature-dot { width: 8px; height: 8px; border-radius: 50%; margin-bottom: 14px; }
-        .lp-feature-card h4 { font-size: 15px; font-weight: 700; color: #fff; margin: 0 0 8px; }
-        .lp-feature-card p { font-size: 13px; line-height: 1.6; color: #888; margin: 0; }
+        @keyframes ro-gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
 
-        /* How it works */
-        .lp-steps { display: flex; flex-direction: column; gap: 0; margin-top: 48px; }
-        .lp-step { display: flex; gap: 24px; padding: 32px 0; border-bottom: 1px solid #111; }
-        .lp-step:last-child { border-bottom: none; }
-        .lp-step-num { width: 48px; height: 48px; border-radius: 50%; background: #0a0a0a; border: 2px solid #00A7E1; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #00A7E1; flex-shrink: 0; }
-        .lp-step h4 { font-size: 18px; font-weight: 700; color: #fff; margin: 0 0 8px; }
-        .lp-step p { font-size: 15px; line-height: 1.6; color: #888; margin: 0; }
+        /* === Glass === */
+        .ro-glass {
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+        }
 
-        /* Pricing */
-        .lp-pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
-        .lp-price-card { padding: 32px; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; position: relative; display: flex; flex-direction: column; }
-        .lp-price-card.featured { border-color: #00A7E1; background: #080e14; }
-        .lp-price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); padding: 4px 16px; background: #00A7E1; color: #020202; font-size: 11px; font-weight: 700; border-radius: 12px; text-transform: uppercase; }
-        .lp-price-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .lp-price-amount { font-size: 44px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-        .lp-price-amount span { font-size: 16px; font-weight: 400; color: #888; }
-        .lp-price-desc { font-size: 14px; color: #888; margin-bottom: 24px; }
-        .lp-price-features { list-style: none; padding: 0; margin: 0 0 24px; flex: 1; }
-        .lp-price-features li { padding: 8px 0; font-size: 14px; color: #aaa; border-bottom: 1px solid #111; }
-        .lp-price-features li:last-child { border-bottom: none; }
-        .lp-price-features li::before { content: "\\2713  "; color: #00A7E1; font-weight: 700; }
-        .lp-btn-price { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333; background: transparent; color: #ECE4B7; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .lp-btn-price:hover { background: #141414; }
-        .lp-btn-price.featured { background: #00A7E1; color: #020202; border: none; }
-        .lp-btn-price.featured:hover { background: #0090c5; }
+        /* ============================================
+           NAV
+        ============================================ */
+        .ro-nav {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          background: rgba(2, 2, 2, 0.8);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
 
-        /* CTA */
-        .lp-cta { text-align: center; padding: 80px 32px; margin: 0; background: linear-gradient(135deg, #00A7E1, #DEC0F1, #CC2936); }
-        .lp-cta h2 { font-size: 40px; font-weight: 800; color: #020202; margin: 0 0 12px; }
-        .lp-cta p { font-size: 16px; color: rgba(2,2,2,0.7); margin: 0 0 28px; }
-        .lp-btn-cta { padding: 16px 40px; border-radius: 12px; border: none; background: #020202; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
-        .lp-btn-cta:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-
-        /* Footer */
-        .lp-footer { padding: 32px; border-top: 1px solid #1a1a1a; }
-        .lp-footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .lp-footer-meta {
+        .ro-nav-inner {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 16px 32px;
           display: flex;
           align-items: center;
-          gap: 20px;
+          justify-content: space-between;
         }
 
-        .lp-footer p { color: #555; font-size: 13px; margin: 0; }
-
-        .lp-footer-links {
+        .ro-logo {
           display: flex;
-          gap: 14px;
-        }
-
-        .lp-footer-links a {
-          color: #888;
-          font-size: 13px;
+          align-items: center;
+          gap: 10px;
+          font-size: 18px;
+          font-weight: 700;
+          color: #ECE4B7;
           text-decoration: none;
         }
 
-        .lp-footer-links a:hover {
-          color: #ece4b7;
+        .ro-logo-mark {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: linear-gradient(135deg, #00A7E1, #DEC0F1);
+          color: #020202;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          font-weight: 800;
+          letter-spacing: -0.02em;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-          .lp-hero h1 { font-size: 36px; }
-          .lp-section h2 { font-size: 28px; }
-          .lp-features-grid, .lp-problem-grid, .lp-pricing-grid { grid-template-columns: 1fr; }
-          .lp-preview-grid { grid-template-columns: 1fr; }
-          .lp-nav-links { display: none; }
-          .lp-footer-inner { flex-direction: column; gap: 16px; }
-          .lp-footer-meta { flex-direction: column; gap: 10px; }
+        .ro-nav-links {
+          display: flex;
+          gap: 36px;
+        }
+
+        .ro-nav-links a {
+          color: rgba(236, 228, 183, 0.5);
+          font-size: 14px;
+          text-decoration: none;
+          transition: color 0.2s;
+          font-weight: 500;
+        }
+
+        .ro-nav-links a:hover {
+          color: #ECE4B7;
+        }
+
+        .ro-nav-actions {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .ro-btn-ghost {
+          padding: 8px 20px;
+          border-radius: 8px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: transparent;
+          color: #ECE4B7;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          text-decoration: none;
+          transition: all 0.2s;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        .ro-btn-ghost:hover {
+          border-color: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.04);
+        }
+
+        .ro-btn-primary {
+          padding: 8px 20px;
+          border-radius: 8px;
+          border: none;
+          background: #ECE4B7;
+          color: #020202;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          text-decoration: none;
+          transition: all 0.2s;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        .ro-btn-primary:hover {
+          background: #d6ce9e;
+          transform: translateY(-1px);
+        }
+
+        /* Mobile toggle */
+        .ro-mobile-toggle {
+          display: none;
+          flex-direction: column;
+          gap: 4px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 8px;
+        }
+
+        .ro-mobile-toggle span {
+          display: block;
+          width: 20px;
+          height: 2px;
+          background: #ECE4B7;
+          border-radius: 1px;
+          transition: all 0.2s;
+        }
+
+        .ro-mobile-menu {
+          display: none;
+          flex-direction: column;
+          gap: 4px;
+          padding: 0 32px 20px;
+        }
+
+        .ro-mobile-menu a {
+          color: rgba(236, 228, 183, 0.5);
+          text-decoration: none;
+          padding: 10px 0;
+          font-size: 15px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          transition: color 0.2s;
+        }
+
+        .ro-mobile-menu a:hover {
+          color: #ECE4B7;
+        }
+
+        /* ============================================
+           HERO
+        ============================================ */
+        .ro-hero {
+          position: relative;
+          min-height: 90vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 120px 32px 100px;
+          overflow: hidden;
+        }
+
+        .ro-hero-gradient {
+          position: absolute;
+          top: -40%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 800px;
+          height: 800px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(0, 167, 225, 0.12) 0%, rgba(222, 192, 241, 0.06) 40%, transparent 70%);
+          animation: ro-hero-pulse 8s ease-in-out infinite;
+          pointer-events: none;
+        }
+
+        @keyframes ro-hero-pulse {
+          0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+          50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .ro-hero-grid-bg {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+          background-size: 64px 64px;
+          mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+          -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+          pointer-events: none;
+        }
+
+        .ro-hero-content {
+          position: relative;
+          z-index: 2;
+          text-align: center;
+          max-width: 800px;
+        }
+
+        .ro-hero-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 16px;
+          border: 1px solid rgba(0, 167, 225, 0.2);
+          border-radius: 20px;
+          font-size: 13px;
+          color: #00A7E1;
+          margin-bottom: 32px;
+          background: rgba(0, 167, 225, 0.05);
+        }
+
+        .ro-badge-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #00A7E1;
+          animation: ro-dot-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes ro-dot-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+
+        .ro-hero h1 {
+          font-size: clamp(40px, 6vw, 72px);
+          font-weight: 800;
+          line-height: 1.05;
+          letter-spacing: -0.04em;
+          margin: 0 0 24px;
+          color: #ECE4B7;
+        }
+
+        .ro-hero-sub {
+          font-size: 18px;
+          line-height: 1.7;
+          color: rgba(236, 228, 183, 0.55);
+          max-width: 560px;
+          margin: 0 auto 44px;
+        }
+
+        .ro-hero-actions {
+          display: flex;
+          gap: 16px;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        .ro-btn-hero {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 16px 32px;
+          border-radius: 12px;
+          border: none;
+          background: #ECE4B7;
+          color: #020202;
+          font-size: 16px;
+          font-weight: 700;
+          cursor: pointer;
+          text-decoration: none;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .ro-btn-hero:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 40px rgba(236, 228, 183, 0.15);
+        }
+
+        .ro-btn-arrow {
+          transition: transform 0.2s;
+        }
+
+        .ro-btn-hero:hover .ro-btn-arrow {
+          transform: translateX(3px);
+        }
+
+        .ro-btn-demo {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 16px 32px;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          color: #ECE4B7;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.25s;
+        }
+
+        .ro-btn-demo:hover {
+          border-color: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.06);
+        }
+
+        .ro-btn-chevron {
+          opacity: 0.6;
+          transition: transform 0.2s;
+        }
+
+        .ro-btn-demo:hover .ro-btn-chevron {
+          transform: translateY(2px);
+        }
+
+        /* ============================================
+           SECTIONS
+        ============================================ */
+        .ro-section {
+          padding: 120px 32px;
+        }
+
+        .ro-section-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+
+        .ro-section-header {
+          text-align: center;
+          margin-bottom: 80px;
+        }
+
+        .ro-section-label {
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 2.5px;
+          color: #00A7E1;
+          margin-bottom: 16px;
+        }
+
+        .ro-section h2 {
+          font-size: clamp(32px, 4vw, 48px);
+          font-weight: 800;
+          line-height: 1.1;
+          color: #ECE4B7;
+          margin: 0 0 20px;
+          letter-spacing: -0.03em;
+        }
+
+        .ro-section-sub {
+          font-size: 17px;
+          line-height: 1.7;
+          color: rgba(236, 228, 183, 0.5);
+          max-width: 540px;
+          margin: 0 auto;
+        }
+
+        /* ============================================
+           FEATURES - Alternating Layout
+        ============================================ */
+        .ro-feature-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 64px;
+          align-items: center;
+          margin-bottom: 100px;
+        }
+
+        .ro-feature-row:last-child {
+          margin-bottom: 0;
+        }
+
+        .ro-feature-row.ro-reverse .ro-feature-text {
+          order: 2;
+        }
+
+        .ro-feature-row.ro-reverse .ro-feature-visual {
+          order: 1;
+        }
+
+        .ro-feature-num {
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 700;
+          color: #00A7E1;
+          letter-spacing: 2px;
+          margin-bottom: 12px;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .ro-feature-text h3 {
+          font-size: 28px;
+          font-weight: 800;
+          color: #ECE4B7;
+          margin: 0 0 16px;
+          letter-spacing: -0.02em;
+        }
+
+        .ro-feature-text p {
+          font-size: 16px;
+          line-height: 1.7;
+          color: rgba(236, 228, 183, 0.5);
+          margin: 0 0 24px;
+        }
+
+        .ro-feature-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .ro-feature-list li {
+          padding: 8px 0;
+          font-size: 14px;
+          color: rgba(236, 228, 183, 0.4);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .ro-feature-list li::before {
+          content: '';
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #00A7E1;
+          flex-shrink: 0;
+        }
+
+        /* Feature Visuals */
+        .ro-feature-visual {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .ro-fv-card {
+          width: 100%;
+          max-width: 440px;
+          border-radius: 16px;
+          padding: 28px;
+          transition: all 0.3s;
+        }
+
+        .ro-fv-card:hover {
+          border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Email triage visual */
+        .ro-fv-inbox {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .ro-fv-mail {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 14px 16px;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.04);
+          transition: all 0.3s;
+        }
+
+        .ro-fv-mail:hover {
+          background: rgba(255, 255, 255, 0.04);
+        }
+
+        .ro-fv-mail-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        .ro-fv-mail-lines {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .ro-fv-line {
+          height: 4px;
+          border-radius: 2px;
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .ro-fv-badge {
+          font-size: 11px;
+          font-weight: 600;
+          padding: 3px 10px;
+          border-radius: 6px;
+          white-space: nowrap;
+        }
+
+        /* Calendar visual */
+        .ro-fv-calendar {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .ro-fv-cal-header {
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ro-fv-cal-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .ro-fv-cal-block {
+          border-radius: 8px;
+          padding: 10px 14px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .ro-fv-cal-tag {
+          font-size: 10px;
+          font-weight: 600;
+          color: #DEC0F1;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+        }
+
+        /* Builder visual */
+        .ro-fv-builder {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0;
+        }
+
+        .ro-fv-node {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          width: 100%;
+          max-width: 260px;
+        }
+
+        .ro-fv-node-trigger {
+          composes: ro-fv-node;
+        }
+
+        .ro-fv-node-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          border: 1px solid;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .ro-fv-connector {
+          width: 2px;
+          height: 20px;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Decisions visual */
+        .ro-fv-decisions {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .ro-fv-decision-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 14px 16px;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .ro-fv-decision-status {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        /* ============================================
+           HOW IT WORKS
+        ============================================ */
+        .ro-how {
+          border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .ro-steps {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 32px;
+          margin-top: 64px;
+        }
+
+        .ro-step {
+          position: relative;
+          text-align: center;
+          padding: 40px 28px;
+          border-radius: 20px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          transition: all 0.3s;
+        }
+
+        .ro-step:hover {
+          border-color: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+        }
+
+        .ro-step-number {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, rgba(0, 167, 225, 0.1), rgba(222, 192, 241, 0.1));
+          border: 1px solid rgba(0, 167, 225, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 20px;
+        }
+
+        .ro-step-number span {
+          font-size: 20px;
+          font-weight: 800;
+          background: linear-gradient(135deg, #00A7E1, #DEC0F1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .ro-step-line {
+          position: absolute;
+          top: 58px;
+          right: -16px;
+          width: 32px;
+          height: 2px;
+          background: rgba(0, 167, 225, 0.2);
+          z-index: 1;
+        }
+
+        .ro-step-line-hidden {
+          display: none;
+        }
+
+        .ro-step h4 {
+          font-size: 20px;
+          font-weight: 700;
+          color: #ECE4B7;
+          margin: 0 0 12px;
+        }
+
+        .ro-step p {
+          font-size: 14px;
+          line-height: 1.7;
+          color: rgba(236, 228, 183, 0.45);
+          margin: 0;
+        }
+
+        /* ============================================
+           FINAL CTA
+        ============================================ */
+        .ro-cta-section {
+          position: relative;
+          padding: 120px 32px;
+          text-align: center;
+          overflow: hidden;
+        }
+
+        .ro-cta-gradient {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(ellipse at 50% 100%, rgba(0, 167, 225, 0.08) 0%, rgba(222, 192, 241, 0.04) 40%, transparent 70%);
+          pointer-events: none;
+        }
+
+        .ro-cta-content {
+          position: relative;
+          z-index: 2;
+        }
+
+        .ro-cta-content h2 {
+          font-size: clamp(32px, 4vw, 48px);
+          font-weight: 800;
+          color: #ECE4B7;
+          margin: 0 0 16px;
+          letter-spacing: -0.03em;
+        }
+
+        .ro-cta-content p {
+          font-size: 17px;
+          color: rgba(236, 228, 183, 0.5);
+          margin: 0 0 40px;
+          line-height: 1.7;
+          max-width: 500px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 40px;
+        }
+
+        .ro-btn-cta-main {
+          font-size: 18px;
+          padding: 18px 40px;
+        }
+
+        /* ============================================
+           FOOTER
+        ============================================ */
+        .ro-footer {
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 64px 32px 32px;
+        }
+
+        .ro-footer-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+
+        .ro-footer-top {
+          display: grid;
+          grid-template-columns: 1fr 2fr;
+          gap: 64px;
+          padding-bottom: 48px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ro-footer-brand {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .ro-footer-tagline {
+          font-size: 14px;
+          color: rgba(236, 228, 183, 0.35);
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        .ro-footer-columns {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 32px;
+        }
+
+        .ro-footer-col {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .ro-footer-col h5 {
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          color: rgba(236, 228, 183, 0.5);
+          margin: 0 0 4px;
+        }
+
+        .ro-footer-col a {
+          font-size: 14px;
+          color: rgba(236, 228, 183, 0.3);
+          text-decoration: none;
+          transition: color 0.2s;
+          line-height: 1.4;
+        }
+
+        .ro-footer-col a:hover {
+          color: #ECE4B7;
+        }
+
+        .ro-footer-bottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 24px;
+        }
+
+        .ro-footer-bottom p {
+          font-size: 13px;
+          color: rgba(236, 228, 183, 0.25);
+          margin: 0;
+        }
+
+        .ro-footer-social {
+          display: flex;
+          gap: 16px;
+        }
+
+        .ro-social-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(236, 228, 183, 0.3);
+          text-decoration: none;
+          transition: all 0.2s;
+        }
+
+        .ro-social-icon:hover {
+          color: #ECE4B7;
+          border-color: rgba(255, 255, 255, 0.15);
+          background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 1024px) {
+          .ro-feature-row {
+            grid-template-columns: 1fr;
+            gap: 40px;
+          }
+
+          .ro-feature-row.ro-reverse .ro-feature-text {
+            order: 1;
+          }
+
+          .ro-feature-row.ro-reverse .ro-feature-visual {
+            order: 2;
+          }
+
+          .ro-fv-card {
+            max-width: 100%;
+          }
+
+          .ro-footer-top {
+            grid-template-columns: 1fr;
+            gap: 40px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .ro-nav-links,
+          .ro-nav-actions {
+            display: none;
+          }
+
+          .ro-mobile-toggle {
+            display: flex;
+          }
+
+          .ro-nav.ro-nav-open .ro-mobile-menu {
+            display: flex;
+          }
+
+          .ro-hero {
+            min-height: auto;
+            padding: 100px 20px 60px;
+          }
+
+          .ro-hero h1 {
+            font-size: 36px;
+          }
+
+          .ro-hero-sub {
+            font-size: 16px;
+          }
+
+          .ro-hero-actions {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .ro-btn-hero,
+          .ro-btn-demo {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .ro-section {
+            padding: 80px 20px;
+          }
+
+          .ro-section-header {
+            margin-bottom: 48px;
+          }
+
+          .ro-feature-row {
+            margin-bottom: 64px;
+          }
+
+          .ro-feature-text h3 {
+            font-size: 24px;
+          }
+
+          .ro-steps {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .ro-step-line {
+            display: none;
+          }
+
+          .ro-footer-columns {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+          }
+
+          .ro-footer-bottom {
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+          }
+
+          .ro-cta-section {
+            padding: 80px 20px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .ro-nav-inner {
+            padding: 14px 16px;
+          }
+
+          .ro-hero h1 {
+            font-size: 30px;
+          }
+
+          .ro-section h2 {
+            font-size: 28px;
+          }
+
+          .ro-footer-columns {
+            grid-template-columns: 1fr;
+          }
+
         }
       `}</style>
     </div>
